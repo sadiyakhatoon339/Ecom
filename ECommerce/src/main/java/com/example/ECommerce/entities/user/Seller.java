@@ -1,5 +1,7 @@
 package com.example.ECommerce.entities.user;
 
+import com.example.ECommerce.models.usermodels.SellerModel;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,21 +16,42 @@ public class Seller{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int userId;
+    private long id;
     String gst;
     String companyContact;
     String companyName;
 
     //*
-    @OneToOne(mappedBy = "seller")
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
     User user;
 
-    public int getUserId() {
-        return userId;
+    public Seller() {
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public Seller(SellerModel sellerModel) {
+        this.id=sellerModel.getId();
+        this.gst=sellerModel.getGst();
+        this.companyContact=sellerModel.getCompanyContact();
+        this.companyName=sellerModel.getCompanyName();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getGst() {

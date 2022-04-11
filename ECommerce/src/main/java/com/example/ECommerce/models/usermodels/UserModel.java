@@ -19,6 +19,7 @@ public class UserModel {
 //    Integer invalidAttemptCount;
 //    Date passwordUpdateDate;
 
+
     public Integer getId() {
         return id;
     }
@@ -74,6 +75,10 @@ public class UserModel {
     public void setRoles(List<Long> roles) {
         this.roles = roles;
     }
+
+
+
+
 //    public Boolean getDeleted() {
 //        return isDeleted;
 //    }

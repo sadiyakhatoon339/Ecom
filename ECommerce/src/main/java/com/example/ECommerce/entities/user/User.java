@@ -28,7 +28,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    long id;
     String email;
     String firstName;
     String middleName;
@@ -40,6 +40,9 @@ public class User {
     Boolean isLocked;
     Integer invalidAttemptCount;
     Date passwordUpdateDate;
+
+    @Transient
+    public String resetPasswordToken;
 
     public User(){}
 
@@ -73,11 +76,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     List<Role> roles;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -177,5 +180,11 @@ public class User {
         this.passwordUpdateDate = passwordUpdateDate;
     }
 
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
 
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
 }

@@ -1,8 +1,11 @@
 package com.example.ECommerce.services;
 
+import com.example.ECommerce.entities.user.Customer;
 import com.example.ECommerce.entities.user.Role;
 import com.example.ECommerce.entities.user.User;
+import com.example.ECommerce.models.usermodels.CustomerModel;
 import com.example.ECommerce.models.usermodels.UserModel;
+import com.example.ECommerce.repo.CustomerRepository;
 import com.example.ECommerce.repo.RoleRepository;
 import com.example.ECommerce.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -28,6 +32,12 @@ public class UserService implements UserDetailsService {
     RoleRepository roleRepository;
 
     @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
+    EmailService emailService;
+
+    @Autowired
     private  BCryptPasswordEncoder passwordEncoder;
 
     public  User save(UserModel userModel){
@@ -36,8 +46,12 @@ public class UserService implements UserDetailsService {
         List<Role> roles= roleRepository.findAllByIdIn(userModel.getRoles());
         user.setRoles(roles);
         userRepository.save(user);
+        emailService.sendMail(user.getEmail(),"Registration !!!","welcome to the My Backend Application Service . This is your username "
+                +user.getEmail()+" . Your Account is Deactivate .Please contact to the Admin to activate your Account.. Warm regards ");
         return user;
     }
+
+
 
 
     private Collection<? extends GrantedAuthority> getAuthorities(

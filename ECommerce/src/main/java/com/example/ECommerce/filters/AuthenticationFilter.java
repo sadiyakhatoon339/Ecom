@@ -1,6 +1,5 @@
 package com.example.ECommerce.filters;
 
-
 import com.example.ECommerce.services.UserService;
 import com.example.ECommerce.utils.JwtUtils;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,28 +13,31 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//@Component
-//@Order(2)
+
+
+@Component
+@Order(2)
 public class AuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    UserService userServices;
+    UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String authToken = request.getHeader("X-AUTH-TOKEN");
-        UsernamePasswordAuthenticationToken authentication = null;
-        String username = null;
+        if(authToken != null){
+            UsernamePasswordAuthenticationToken authentication = null;
+            String username = null;
 
             try {
                 username = JwtUtils.getUsername(authToken);
+                System.out.println(username);
             } catch (IllegalArgumentException e) {
                 logger.error("an error occured during getting username from token", e);
             } catch (ExpiredJwtException e) {
@@ -45,28 +47,34 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             }
 
 
-
             UserDetails userDetails;
             try {
-                userDetails = userServices.loadUserByUsername(username);
+                userDetails = userService.loadUserByUsername(username);
+                System.out.println(userDetails);
                 if (JwtUtils.validate(authToken, userDetails)) {
                     authentication = JwtUtils.getAuthentication(authToken, userDetails);
+                    System.out.println(authentication);
+
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 } else {
-
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        return;
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
 
                 }
             } catch (UsernameNotFoundException e) {
                 logger.error("Failed to load userDetails from token.");
 
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
 
             }
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 }
+

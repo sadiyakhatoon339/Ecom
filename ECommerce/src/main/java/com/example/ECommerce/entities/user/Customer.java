@@ -1,26 +1,47 @@
 package com.example.ECommerce.entities.user;
 
 
-import javax.persistence.*;
+import com.example.ECommerce.models.usermodels.CustomerModel;
 
+import javax.persistence.*;
 @Entity
-@Table(name="Customer")
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   Long userId;
-    String contact;
+    private long id;
+    private String contact;
 
-    @OneToOne(mappedBy = "customer")
-    User user;
 
-    public Long getUserId() {
-        return userId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
+    public Customer() {
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Customer(CustomerModel customerModel) {
+//        this.id = customerModel.getId();
+        this.contact = customerModel.getContact();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getContact() {
