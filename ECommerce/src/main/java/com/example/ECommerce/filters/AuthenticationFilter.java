@@ -20,15 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-
 @Component
 @Order(2)
 public class AuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     UserService userService;
-
-    //!!!!!
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,15 +33,10 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         if(authToken != null){
             UsernamePasswordAuthenticationToken authentication = null;
             String username = null;
-
             System.out.println(authToken);
 
             try {
                 username = JwtUtils.getUsername(authToken);
-
-//                username=authToken.getToken(authToken);
-
-                System.out.println(username);
             } catch (IllegalArgumentException e) {
                 logger.error("an error occured during getting username from token", e);
             } catch (ExpiredJwtException e) {
@@ -74,12 +65,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
-
             }
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
         } else {
             filterChain.doFilter(request, response);
         }
