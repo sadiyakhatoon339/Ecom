@@ -108,14 +108,8 @@ public class SellerController {
             field.setAccessible(true);
             ReflectionUtils.setField(field, user, v);
         });
-        System.out.println("hello");
-        System.out.println("hello");
-
         userRepo.save(user);
-        System.out.println("hello");
-        System.out.println("hello");
-
-
+       
         Seller seller = sellerRepository.findById(user.getId());
         SellerModel sellerModel = new SellerModel(user);
         sellerModel.setGst(seller.getGst());
